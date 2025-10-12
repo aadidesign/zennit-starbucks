@@ -51,7 +51,7 @@ pm2 delete all
 
 # Start the application with PM2
 echo "🚀 Starting application with PM2..."
-pm2 start server.js --name "starbucks-app" --env PORT=3000
+pm2 start server.js --name "starbucks-app" --env PORT=3001
 
 # Save PM2 configuration
 pm2 save
@@ -62,7 +62,7 @@ sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -
 
 # Configure firewall
 echo "🔥 Configuring firewall..."
-sudo ufw allow 3000
+sudo ufw allow 3001
 sudo ufw allow ssh
 sudo ufw --force enable
 
@@ -73,7 +73,7 @@ pm2 logs starbucks-app --lines 10
 
 # Test local connection
 echo "🧪 Testing local connection..."
-curl -I http://localhost:3000
+curl -I http://localhost:3001
 
 echo "🎉 Deployment complete!"
-echo "Your app should be accessible at: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):3000"
+echo "Your app should be accessible at: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):3001"
