@@ -21,7 +21,11 @@ export default defineConfig({
           'charts': ['recharts'],
           'ui': ['framer-motion', 'lucide-react', 'react-intersection-observer'],
           'aws': ['aws-sdk', '@aws-sdk/client-dynamodb', '@aws-sdk/lib-dynamodb', '@aws-sdk/client-rds', '@aws-sdk/client-ec2', '@aws-sdk/client-iam', '@aws-sdk/client-cloudwatch', '@aws-sdk/client-auto-scaling']
-        }
+        },
+        // Force new chunk hashes
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     }
   }
