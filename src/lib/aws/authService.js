@@ -25,11 +25,17 @@ const MESSAGES_TABLE = 'StarbucksMessages';
  */
 export const registerUser = async (userData) => {
   try {
+    console.log('🚀 REAL AWS Registration started for:', userData.email);
+    console.log('🔧 AWS Region:', import.meta.env.VITE_AWS_REGION || 'us-east-1');
+    console.log('🔧 AWS Access Key configured:', !!import.meta.env.VITE_AWS_ACCESS_KEY_ID);
+    
     const { email, password, firstName, lastName, phone } = userData;
     
     // Check if user already exists
+    console.log('🔍 Checking if user exists in DynamoDB...');
     const existingUser = await getUserByEmail(email);
     if (existingUser.success && existingUser.data) {
+      console.log('❌ User already exists');
       return { 
         success: false, 
         error: 'User with this email already exists' 
@@ -61,24 +67,29 @@ export const registerUser = async (userData) => {
       }
     };
 
+    console.log('📝 Creating user in DynamoDB:', user.email);
     const command = new PutCommand({
       TableName: USERS_TABLE,
       Item: user,
-      ConditionExpression: 'attribute_not_exists(userId)'
+      ConditionExpression: 'attribute_not_exists(email)'
     });
 
-    await docClient.send(command);
+    const result = await docClient.send(command);
+    console.log('✅ User created successfully in DynamoDB:', result);
 
     // Return user data without password
     const { password: _, ...userWithoutPassword } = user;
     
+    console.log('🎉 Registration completed successfully');
     return { 
       success: true, 
       data: userWithoutPassword,
-      message: 'User registered successfully' 
+      message: 'User registered successfully',
+      token: `aws-token-${Date.now()}`
     };
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ REAL AWS Registration error:', error);
+    console.error('Error details:', error.message);
     return { 
       success: false, 
       error: error.message || 'Failed to register user' 
@@ -94,9 +105,12 @@ export const registerUser = async (userData) => {
  */
 export const signInUser = async (email, password) => {
   try {
+    console.log('🚀 REAL AWS Sign in started for:', email);
+    
     const userResult = await getUserByEmail(email);
     
     if (!userResult.success || !userResult.data) {
+      console.log('❌ User not found in DynamoDB');
       return { 
         success: false, 
         error: 'Invalid email or password' 
@@ -104,10 +118,12 @@ export const signInUser = async (email, password) => {
     }
 
     const user = userResult.data;
+    console.log('✅ User found in DynamoDB:', user.email);
 
     // Verify password (in production, use bcrypt.compare)
     const hashedPassword = btoa(password);
     if (user.password !== hashedPassword) {
+      console.log('❌ Password mismatch');
       return { 
         success: false, 
         error: 'Invalid email or password' 
@@ -116,6 +132,7 @@ export const signInUser = async (email, password) => {
 
     // Check account status
     if (user.accountStatus !== 'active') {
+      console.log('❌ Account not active');
       return { 
         success: false, 
         error: 'Account is not active' 
@@ -128,13 +145,15 @@ export const signInUser = async (email, password) => {
     // Return user data without password
     const { password: _, ...userWithoutPassword } = user;
     
+    console.log('🎉 Sign in completed successfully');
     return { 
       success: true, 
       data: userWithoutPassword,
-      message: 'Signed in successfully' 
+      message: 'Signed in successfully',
+      token: `aws-token-${Date.now()}`
     };
   } catch (error) {
-    console.error('Sign in error:', error);
+    console.error('❌ REAL AWS Sign in error:', error);
     return { 
       success: false, 
       error: error.message || 'Failed to sign in' 
