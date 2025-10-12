@@ -11,7 +11,7 @@ import {
   documentDBService, 
   neptuneService,
   timestreamService 
-} from '../../lib/mockAdminServices';
+} from '../../lib/aws/databaseServices';
 
 const DatabaseManagement = () => {
   const [activeService, setActiveService] = useState('rds');

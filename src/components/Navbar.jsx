@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, MapPin, ShoppingCart, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getSession, clearSession } from '../lib/frontendAuthService';
+import { getSession, clearSession } from '../lib/aws/authService';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);

@@ -444,36 +444,69 @@ export const updateMessageStatus = async (messageId, newStatus) => {
 
 /**
  * Save user session to local storage
- * @param {Object} userData - User data
+ * @param {Object} userData - User data (can be response object with success/data or direct user data)
  */
 export const saveSession = (userData) => {
   try {
-    localStorage.setItem('starbucksUser', JSON.stringify(userData));
-    localStorage.setItem('starbucksSession', Date.now().toString());
+    // Handle different response structures
+    let user = userData;
+    let token = null;
+    
+    // If it's a response object with success/data structure
+    if (userData && userData.success && userData.data) {
+      user = userData.data;
+      token = userData.token || 'aws-session-' + Date.now();
+    } 
+    // If it's direct user data
+    else if (userData && userData.userId) {
+      user = userData;
+      token = userData.token || 'aws-session-' + Date.now();
+    }
+    // If it's an object with user property
+    else if (userData && userData.user) {
+      user = userData.user;
+      token = userData.token || 'aws-session-' + Date.now();
+    }
+    
+    // Save user data
+    localStorage.setItem('starbucksUser', JSON.stringify(user));
+    localStorage.setItem('starbucksSession', JSON.stringify({
+      token: token,
+      timestamp: Date.now()
+    }));
+    
+    return { success: true };
   } catch (error) {
     console.error('Save session error:', error);
+    return { success: false, error: error.message };
   }
 };
 
 /**
  * Get current session
- * @returns {Object|null} - User data or null
+ * @returns {Object|null} - User data and session info or null
  */
 export const getSession = () => {
   try {
     const user = localStorage.getItem('starbucksUser');
-    const sessionTime = localStorage.getItem('starbucksSession');
+    const session = localStorage.getItem('starbucksSession');
     
-    if (!user || !sessionTime) return null;
+    if (!user || !session) return null;
+    
+    const sessionData = JSON.parse(session);
+    const userData = JSON.parse(user);
     
     // Check if session is older than 24 hours
-    const hoursSinceLogin = (Date.now() - parseInt(sessionTime)) / (1000 * 60 * 60);
+    const hoursSinceLogin = (Date.now() - sessionData.timestamp) / (1000 * 60 * 60);
     if (hoursSinceLogin > 24) {
       clearSession();
       return null;
     }
     
-    return JSON.parse(user);
+    return {
+      user: userData,
+      session: sessionData
+    };
   } catch (error) {
     console.error('Get session error:', error);
     return null;

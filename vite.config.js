@@ -19,7 +19,8 @@ export default defineConfig({
         manualChunks: {
           'vendor': ['react', 'react-dom', 'react-router-dom'],
           'charts': ['recharts'],
-          'ui': ['framer-motion', 'lucide-react', 'react-intersection-observer']
+          'ui': ['framer-motion', 'lucide-react', 'react-intersection-observer'],
+          'aws': ['aws-sdk', '@aws-sdk/client-dynamodb', '@aws-sdk/lib-dynamodb', '@aws-sdk/client-rds', '@aws-sdk/client-ec2', '@aws-sdk/client-iam', '@aws-sdk/client-cloudwatch', '@aws-sdk/client-auto-scaling']
         }
       }
     }

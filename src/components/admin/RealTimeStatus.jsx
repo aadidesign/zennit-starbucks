@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, Clock, RefreshCw, Shield } from 'lucide-react';
-import { dataValidator } from '../../lib/mockAdminServices';
+import { dataValidator } from '../../lib/aws/dataValidator';
 
 const RealTimeStatus = () => {
   const [servicesStatus, setServicesStatus] = useState({
@@ -17,20 +17,26 @@ const RealTimeStatus = () => {
     let healthyServices = 0;
     let totalServices = 0;
 
-    // Check DynamoDB (Mock)
+    // Check DynamoDB
     try {
-      const result = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({ success: true, data: ['users', 'orders'] });
-        }, 1000);
-      });
-      
-      newStatus.dynamodb = {
-        status: 'healthy',
-        lastChecked: new Date().toISOString(),
-        error: null,
-        dataValid: true
-      };
+      const { dynamoDBService } = await import('../../lib/aws/databaseServices');
+      const result = await dynamoDBService.listTables();
+      if (result.success) {
+        const validation = await dataValidator.validateServiceHealth('dynamodb', result.data);
+        newStatus.dynamodb = {
+          status: 'healthy',
+          lastChecked: new Date().toISOString(),
+          error: null,
+          dataValid: validation.isValid
+        };
+      } else {
+        newStatus.dynamodb = {
+          status: 'error',
+          lastChecked: new Date().toISOString(),
+          error: result.error,
+          dataValid: false
+        };
+      }
     } catch (error) {
       newStatus.dynamodb = {
         status: 'error',
@@ -40,20 +46,26 @@ const RealTimeStatus = () => {
       };
     }
 
-    // Check IAM (Mock)
+    // Check IAM
     try {
-      const result = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({ success: true, data: ['admin', 'user1', 'user2'] });
-        }, 1000);
-      });
-      
-      newStatus.iam = {
-        status: 'healthy',
-        lastChecked: new Date().toISOString(),
-        error: null,
-        dataValid: true
-      };
+      const { iamService } = await import('../../lib/aws/networkingServices');
+      const result = await iamService.listUsers();
+      if (result.success) {
+        const validation = await dataValidator.validateServiceHealth('iam', result.data);
+        newStatus.iam = {
+          status: 'healthy',
+          lastChecked: new Date().toISOString(),
+          error: null,
+          dataValid: validation.isValid
+        };
+      } else {
+        newStatus.iam = {
+          status: 'error',
+          lastChecked: new Date().toISOString(),
+          error: result.error,
+          dataValid: false
+        };
+      }
     } catch (error) {
       newStatus.iam = {
         status: 'error',
@@ -63,20 +75,26 @@ const RealTimeStatus = () => {
       };
     }
 
-    // Check CloudWatch (Mock)
+    // Check CloudWatch
     try {
-      const result = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve({ success: true, data: ['cpu-alarm', 'memory-alarm'] });
-        }, 1000);
-      });
-      
-      newStatus.cloudwatch = {
-        status: 'healthy',
-        lastChecked: new Date().toISOString(),
-        error: null,
-        dataValid: true
-      };
+      const { cloudWatchService } = await import('../../lib/aws/scalabilityServices');
+      const result = await cloudWatchService.listAlarms();
+      if (result.success) {
+        const validation = await dataValidator.validateServiceHealth('cloudwatch', result.data);
+        newStatus.cloudwatch = {
+          status: 'healthy',
+          lastChecked: new Date().toISOString(),
+          error: null,
+          dataValid: validation.isValid
+        };
+      } else {
+        newStatus.cloudwatch = {
+          status: 'error',
+          lastChecked: new Date().toISOString(),
+          error: result.error,
+          dataValid: false
+        };
+      }
     } catch (error) {
       newStatus.cloudwatch = {
         status: 'error',

@@ -13,7 +13,7 @@ import {
   guardDutyService,
   wafService,
   shieldService
-} from '../../lib/mockAdminServices';
+} from '../../lib/aws/networkingServices';
 
 const NetworkingManagement = () => {
   const [activeService, setActiveService] = useState('iam');
