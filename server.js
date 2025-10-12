@@ -3,17 +3,17 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the dist directory with proper headers
-app.use(express.static(path.join(__dirname, 'dist'), {
-  setHeaders: (res, path) => {
-    // Set proper MIME types
-    if (path.endsWith('.js')) {
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Serve assets with proper headers
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
-    } else if (path.endsWith('.css')) {
+    } else if (filePath.endsWith('.css')) {
       res.setHeader('Content-Type', 'text/css');
     }
-    // Disable caching for development
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   }
 }));
 
@@ -25,4 +25,5 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on http://0.0.0.0:${PORT}`);
   console.log(`Serving files from: ${path.join(__dirname, 'dist')}`);
+  console.log(`Assets available at: http://0.0.0.0:${PORT}/assets/`);
 });

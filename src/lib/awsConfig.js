@@ -1,7 +1,17 @@
 // AWS SDK Configuration for advanced features
 // This is optional and only needed if you want to use AWS services directly
 
-import AWS from 'aws-sdk';
+// Use mocks for frontend builds to prevent import errors
+const isFrontend = typeof window !== 'undefined';
+
+let AWS;
+if (isFrontend) {
+  // Import mocks for frontend
+  AWS = require('./mockAWS').mockAWS;
+} else {
+  // Import real AWS SDK for backend
+  AWS = require('aws-sdk');
+}
 
 // Configure AWS SDK
 AWS.config.update({
