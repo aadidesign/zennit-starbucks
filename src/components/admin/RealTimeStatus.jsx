@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, Clock, RefreshCw, Shield } from 'lucide-react';
-import { dataValidator } from '../../lib/aws/dataValidator';
+import { dataValidator } from '../../lib/mockAdminServices';
 
 const RealTimeStatus = () => {
   const [servicesStatus, setServicesStatus] = useState({
