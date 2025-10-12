@@ -9,13 +9,13 @@ const GiftCardsPage = () => {
       <div className="bg-gradient-to-br from-starbucks-gold to-amber-600 text-white py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <Gift className="w-20 h-20 mx-auto mb-6" />
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tighter leading-tight">
             Starbucks Gift Cards
           </h1>
-          <p className="text-xl md:text-2xl mb-8 opacity-90">
+          <p className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
             Share the love with a Starbucks Gift Card
           </p>
-          <button className="bg-white text-starbucks-gold font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition-all text-lg">
+          <button className="bg-white text-starbucks-gold font-bold px-8 py-4 rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 text-lg tracking-tight">
             Buy a Gift Card
           </button>
         </div>
@@ -24,12 +24,12 @@ const GiftCardsPage = () => {
       {/* Featured Cards */}
       <div className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Featured Gift Cards</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 tracking-tighter">Featured Gift Cards</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: 'Birthday Gift Card', image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=400', amount: '$25.00' },
-              { name: 'Thank You Card', image: 'https://images.unsplash.com/photo-1464550838636-1a3496df938b?w=400', amount: '$50.00' },
-              { name: 'Celebration Card', image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400', amount: '$100.00' },
+              { name: 'Birthday Gift Card', image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&auto=format&fit=crop&q=80', amount: '$25.00' },
+              { name: 'Thank You Card', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&auto=format&fit=crop&q=80', amount: '$50.00' },
+              { name: 'Celebration Card', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&auto=format&fit=crop&q=80', amount: '$100.00' },
             ].map((card, idx) => (
               <div key={idx} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all cursor-pointer">
                 <img src={card.image} alt={card.name} className="w-full h-48 object-cover" />
@@ -49,7 +49,7 @@ const GiftCardsPage = () => {
       {/* How to Use */}
       <div className="py-16 px-4 bg-starbucks-cream">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Ways to pay with your gift card</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 tracking-tighter">Ways to pay with your gift card</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl p-8 text-center">
               <Smartphone className="w-16 h-16 mx-auto mb-4 text-starbucks-green" />

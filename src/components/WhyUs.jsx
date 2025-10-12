@@ -6,8 +6,15 @@ import {
   Leaf,
   Shield
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 export default function WhyUs() {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   const features = [
     {
       title: "Premium Quality Beans",
@@ -42,40 +49,70 @@ export default function WhyUs() {
   ];
 
   return (
-    <section className="bg-white py-16 px-4 md:px-20">
+    <section className="bg-white py-16 px-4 md:px-20" ref={ref}>
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <motion.h2 
+          className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tighter leading-tight"
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+        >
           Why choose <span className="text-starbucks-green">Starbucks</span>? ☕
-        </h2>
-        <p className="text-gray-600 text-lg mb-12 max-w-3xl mx-auto">
+        </motion.h2>
+        <motion.p 
+          className="text-gray-600 text-lg mb-12 max-w-3xl mx-auto leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           More than coffee, we offer an experience. Discover what makes us the world's most beloved coffeehouse.
-        </p>
+        </motion.p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 border-t-2 border-l-2 border-starbucks-green/20">
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
               className="border-r-2 border-b-2 border-starbucks-green/20 p-8 md:p-10 flex flex-col items-center text-center hover:bg-starbucks-cream/50 transition-all duration-300 group"
+              initial={{ opacity: 0, y: 50 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
             >
-              <div className="mb-6 group-hover:scale-110 transition-transform">{feature.icon}</div>
-              <h4 className="text-xl md:text-2xl tracking-tight font-bold text-gray-900 mb-3">
+              <motion.div 
+                className="mb-6"
+                whileHover={{ scale: 1.2, rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                {feature.icon}
+              </motion.div>
+              <h4 className="text-xl md:text-2xl tracking-tighter font-bold text-gray-900 mb-3 leading-tight">
                 {feature.title}
               </h4>
-              <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed">{feature.desc}</p>
-            </div>
+              <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed tracking-tight">{feature.desc}</p>
+            </motion.div>
           ))}
         </div>
 
         {/* Additional CTA */}
-        <div className="mt-12 bg-gradient-to-r from-starbucks-green to-starbucks-green-dark text-white rounded-2xl p-8 md:p-12">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Join Starbucks® Rewards</h3>
-          <p className="text-lg mb-6 opacity-90">
+        <motion.div 
+          className="mt-12 bg-gradient-to-r from-starbucks-green to-starbucks-green-dark text-white rounded-2xl p-8 md:p-12 hover:shadow-2xl transition-all duration-300"
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          whileHover={{ scale: 1.02 }}
+        >
+          <h3 className="text-2xl md:text-3xl font-bold mb-4 tracking-tighter leading-tight">Join Starbucks® Rewards</h3>
+          <p className="text-lg mb-6 opacity-90 leading-relaxed">
             Join now and start earning stars with every purchase. Get free drinks, food, and more!
           </p>
-          <button className="bg-white text-starbucks-green font-bold px-8 py-4 rounded-full hover:bg-starbucks-cream transition-all hover:scale-105 shadow-lg">
+          <motion.button 
+            className="bg-white text-starbucks-green font-bold px-8 py-4 rounded-full hover:bg-starbucks-cream transition-all duration-300 shadow-lg tracking-tight"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Sign Up Now - It's Free
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );

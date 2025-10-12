@@ -123,18 +123,99 @@ const ContactPage = () => {
       {/* FAQ Section */}
       <FAQ />
 
-      {/* Map Section */}
-      <div className="py-16 px-4 bg-gray-100">
+      {/* Starbucks HQ Location Section */}
+      <div className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-8">Headquarters Location</h2>
-          <div className="bg-white rounded-xl overflow-hidden shadow-lg">
-            <div className="h-96 bg-gray-200 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 mx-auto mb-4 text-starbucks-green" />
-                <p className="text-xl font-semibold">Starbucks Headquarters</p>
-                <p className="text-gray-600">2401 Utah Avenue South</p>
-                <p className="text-gray-600">Seattle, WA 98134, USA</p>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 tracking-tight">
+              Our Global Headquarters
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Located in the heart of Seattle, where our journey began in 1971
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left side - Info */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="bg-starbucks-green/10 p-3 rounded-xl">
+                    <svg className="w-8 h-8 text-starbucks-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Starbucks Headquarters</h3>
+                    <p className="text-gray-600 text-lg leading-relaxed">
+                      2401 Utah Avenue South<br />
+                      Seattle, WA 98134<br />
+                      United States
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4 pt-4 border-t border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-6 h-6 text-starbucks-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold text-gray-900">Established</p>
+                      <p className="text-gray-600">1971 in Seattle's Pike Place Market</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <svg className="w-6 h-6 text-starbucks-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold text-gray-900">Headquarters</p>
+                      <p className="text-gray-600">Moved to current location in 1997</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <svg className="w-6 h-6 text-starbucks-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold text-gray-900">Global Presence</p>
+                      <p className="text-gray-600">38,000+ stores in 85+ countries</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <a 
+                    href="https://www.google.com/maps/place/Starbucks+Support+Center/@47.5414196,-122.3301766,17z/data=!3m1!4b1!4m6!3m5!1s0x54904109e2fb8ebf:0x953cc87f47d168f0!8m2!3d47.5414196!4d-122.3301766!16s%2Fg%2F11c0m1k5k1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-starbucks-green text-white px-6 py-3 rounded-full font-semibold hover:bg-starbucks-green-dark transition-all duration-300 group"
+                  >
+                    <span>Get Directions</span>
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
               </div>
+            </div>
+
+            {/* Right side - Map */}
+            <div className="rounded-2xl overflow-hidden shadow-2xl h-[600px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2691.4749891852443!2d-122.33235842339!3d47.54141967118!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54904109e2fb8ebf%3A0x953cc87f47d168f0!2sStarbucks%20Support%20Center%2C%202401%20Utah%20Ave%20S%2C%20Seattle%2C%20WA%2098134%2C%20USA!5e0!3m2!1sen!2sus!4v1704067200000!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Starbucks Support Center - 2401 Utah Avenue South, Seattle, WA 98134, USA"
+              ></iframe>
             </div>
           </div>
         </div>

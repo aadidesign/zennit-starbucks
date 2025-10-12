@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, MapPin, ShoppingCart, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,28 +25,40 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-lg' : 'bg-white'
-    }`}>
+    <motion.nav 
+      className={`fixed top-0 w-full z-[100] transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-lg' : 'bg-white shadow-md'
+      }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center space-x-8">
             <Link to="/">
-              <img 
+              <motion.img 
                 src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png" 
                 alt="Starbucks" 
-                className="h-12 w-12 cursor-pointer hover:scale-110 transition-transform"
+                className="h-12 w-12 cursor-pointer"
+                whileHover={{ scale: 1.1, rotate: 360 }}
+                transition={{ type: "spring", stiffness: 200 }}
               />
             </Link>
             
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8">
-              {menuItems.map((item) => (
+              {menuItems.map((item, index) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
                 <Link 
-                  key={item.name}
                   to={item.path}
-                  className={`font-semibold text-sm tracking-wider uppercase transition-colors ${
+                  className={`font-semibold text-sm tracking-tight uppercase transition-all duration-300 ${
                     location.pathname === item.path 
                       ? 'text-starbucks-green border-b-2 border-starbucks-green' 
                       : 'text-gray-900 hover:text-starbucks-green'
@@ -53,35 +66,65 @@ const Navbar = () => {
                 >
                   {item.name}
                 </Link>
+              </motion.div>
               ))}
             </div>
           </div>
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            <Link 
-              to="/contact"
-              className="hidden md:flex items-center space-x-2 hover:text-starbucks-green transition-colors"
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <MapPin size={20} />
-              <span className="text-sm font-semibold">Find a store</span>
-            </Link>
+              <a 
+                href="https://www.starbucks.com/store-locator"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:flex items-center space-x-2 hover:text-starbucks-green transition-all duration-300"
+              >
+                <MapPin size={20} />
+                <span className="text-sm font-semibold tracking-tight">Find a store</span>
+              </a>
+            </motion.div>
             
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <motion.a 
+              href="https://www.starbucks.com/menu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 hover:bg-gray-100 rounded-full transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
               <ShoppingCart size={22} />
-            </button>
+            </motion.a>
             
-            <button className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-colors">
+            <motion.a 
+              href="https://www.starbucks.com/account/signin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Sign in
-            </button>
+            </motion.a>
             
-            <button className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-colors">
+            <motion.a 
+              href="https://www.starbucks.com/account/create"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 tracking-tight"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Join now
-            </button>
+            </motion.a>
 
             {/* Mobile Menu Button */}
             <button 
-              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-all duration-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -90,44 +133,81 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
-            <div className="flex flex-col space-y-4">
-              {menuItems.map((item) => (
-                <Link 
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              className="md:hidden py-4 border-t border-gray-200"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex flex-col space-y-4">
+                {menuItems.map((item, index) => (
+                <motion.div
                   key={item.name}
-                  to={item.path}
-                  className={`font-semibold text-sm ${
-                    location.pathname === item.path 
-                      ? 'text-starbucks-green' 
-                      : 'text-gray-900 hover:text-starbucks-green'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  {item.name}
-                </Link>
-              ))}
-              <Link 
-                to="/contact"
-                className="flex items-center space-x-2 text-sm font-semibold"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <MapPin size={18} />
-                <span>Find a store</span>
-              </Link>
-              <div className="flex space-x-2 pt-2">
-                <button className="flex-1 px-4 py-2 border-2 border-black rounded-full font-semibold text-sm">
-                  Sign in
-                </button>
-                <button className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm">
-                  Join now
-                </button>
+                  <Link 
+                    to={item.path}
+                    className={`font-semibold text-sm tracking-tight transition-all duration-300 ${
+                      location.pathname === item.path 
+                        ? 'text-starbucks-green' 
+                        : 'text-gray-900 hover:text-starbucks-green'
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+                ))}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                >
+                  <a 
+                    href="https://www.starbucks.com/store-locator"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-sm font-semibold tracking-tight transition-all duration-300"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <MapPin size={18} />
+                    <span>Find a store</span>
+                  </a>
+                </motion.div>
+                <motion.div 
+                  className="flex space-x-2 pt-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.6 }}
+                >
+                  <a 
+                    href="https://www.starbucks.com/account/signin"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 px-4 py-2 border-2 border-black rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-100 text-center"
+                  >
+                    Sign in
+                  </a>
+                  <a 
+                    href="https://www.starbucks.com/account/create"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-800 text-center"
+                  >
+                    Join now
+                  </a>
+                </motion.div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
