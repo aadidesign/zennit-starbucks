@@ -9,6 +9,9 @@ VITE_AWS_ACCESS_KEY_ID=your_access_key_here
 VITE_AWS_SECRET_ACCESS_KEY=your_secret_access_key_here
 VITE_AWS_REGION=us-east-1
 
+# Backend API URL (Update with your EC2 IP or domain)
+VITE_API_URL=http://localhost:3000
+
 # Optional - Only if you're using S3 for file uploads
 VITE_AWS_S3_BUCKET=your-bucket-name
 

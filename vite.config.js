@@ -10,7 +10,25 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: false, // Disable sourcemaps to save memory
+    chunkSizeWarningLimit: 2000,
+    minify: 'esbuild', // Faster minification
+    rollupOptions: {
+      // Exclude AWS SDKs from frontend bundle - they belong in backend only!
+      external: [
+        /@aws-sdk\/.*/,
+      ],
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'charts': ['recharts'],
+          'ui': ['framer-motion', 'lucide-react', 'react-intersection-observer']
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    exclude: ['@aws-sdk/*']
   }
 })
 

@@ -6,7 +6,8 @@
   "author": "Aadi",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "NODE_OPTIONS='--max-old-space-size=512' vite build",
+    "build:prod": "NODE_OPTIONS='--max-old-space-size=1024' vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
@@ -29,7 +30,6 @@
     "@aws-sdk/client-timestream-write": "^3.908.0",
     "@aws-sdk/client-wafv2": "^3.908.0",
     "@aws-sdk/lib-dynamodb": "^3.908.0",
-    "@supabase/supabase-js": "^2.39.7",
     "aws-sdk": "^2.1562.0",
     "framer-motion": "^11.0.5",
     "lucide-react": "^0.344.0",
