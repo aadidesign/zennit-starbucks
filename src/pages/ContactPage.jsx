@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import FAQ from '../components/FAQ';
 import { MapPin, Phone, Mail, Clock, Send, AlertCircle, CheckCircle } from 'lucide-react';
-import { saveContactMessage } from '../lib/aws/authService';
+import { saveContactMessage } from '../lib/aws/authService.js';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({

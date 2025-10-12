@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, CheckCircle } from 'lucide-react';
-import { signInUser, saveSession } from '../lib/aws/authService';
+import { signInUser, saveSession } from '../lib/aws/authService.js';
 
 const SignInPage = () => {
   const navigate = useNavigate();

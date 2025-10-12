@@ -13,7 +13,7 @@ import {
   guardDutyService,
   wafService,
   shieldService
-} from '../../lib/aws/networkingServices';
+} from '../../lib/aws/networkingServices.js';
 
 const NetworkingManagement = () => {
   const [activeService, setActiveService] = useState('iam');

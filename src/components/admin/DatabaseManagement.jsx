@@ -11,7 +11,7 @@ import {
   documentDBService, 
   neptuneService,
   timestreamService 
-} from '../../lib/aws/databaseServices';
+} from '../../lib/aws/databaseServices.js';
 
 const DatabaseManagement = () => {
   const [activeService, setActiveService] = useState('rds');

@@ -9,8 +9,8 @@ import {
 import {
   cloudWatchService,
   monitoringUtils
-} from '../../lib/aws/scalabilityServices';
-import { dynamoDBService } from '../../lib/aws/databaseServices';
+} from '../../lib/aws/scalabilityServices.js';
+import { dynamoDBService } from '../../lib/aws/databaseServices.js';
 
 const ScalabilityMonitoring = () => {
   const [loading, setLoading] = useState(false);
