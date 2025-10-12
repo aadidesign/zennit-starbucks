@@ -18,6 +18,7 @@ export default defineConfig({
       // Exclude AWS SDKs from frontend bundle - they belong in backend only!
       external: [
         /@aws-sdk\/.*/,
+        'aws-sdk'
       ],
       output: {
         manualChunks: {
@@ -29,7 +30,12 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['@aws-sdk/*']
+    exclude: ['@aws-sdk/*', 'aws-sdk']
+  },
+  define: {
+    // Define environment variables for build
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    'process.env.VITE_BUILD_MODE': JSON.stringify('production')
   }
 })
 
