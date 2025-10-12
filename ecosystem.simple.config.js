@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'starbucks-app',
-      script: 'npx',
-      args: 'vite preview --config vite.config.prod.js',
+      script: 'server.js',
       cwd: '/home/ubuntu/zennit-starbucks',
       instances: 1,
       autorestart: true,

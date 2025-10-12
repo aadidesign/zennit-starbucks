@@ -10,9 +10,11 @@
     "build:prod": "NODE_OPTIONS='--max-old-space-size=1024' vite build",
     "preview": "vite preview --config vite.config.prod.js",
     "start": "npm run build:prod && npm run preview",
+    "serve": "node server.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "@aws-sdk/client-auto-scaling": "^3.908.0",
     "@aws-sdk/client-cloudfront": "^3.908.0",
     "@aws-sdk/client-cloudwatch": "^3.908.0",
