@@ -204,10 +204,10 @@ const Footer = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <p className="text-gray-400 text-sm tracking-tight">
-            🚀 Developed by <span className="text-starbucks-gold font-semibold">Aadi</span> for Frontend Hackathon & Cloud Computing Project
+            🚀 Developed by <span className="text-starbucks-gold font-semibold">Aadi</span> 
           </p>
           <p className="text-gray-500 text-xs mt-2 tracking-tight">
-            Built with React, Tailwind CSS, Supabase & AWS | Deployed on Vercel
+            Built with React, Tailwind CSS & AWS | Deployed on Vercel
           </p>
         </motion.div>
       </div>

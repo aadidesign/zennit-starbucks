@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import DatabaseManagement from '../components/admin/DatabaseManagement';
 import NetworkingManagement from '../components/admin/NetworkingManagement';
 import ScalabilityMonitoring from '../components/admin/ScalabilityMonitoring';
+import RealTimeStatus from '../components/admin/RealTimeStatus';
 import { Database, Network, Activity, Shield, BarChart3, Server, Cloud } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('database');
+  const [activeTab, setActiveTab] = useState('status');
 
   const tabs = [
-    { id: 'database', name: 'Database Services', icon: Database, color: 'blue' },
+    { id: 'status', name: 'Service Health', icon: Activity, color: 'blue' },
+    { id: 'database', name: 'Database Services', icon: Database, color: 'orange' },
     { id: 'networking', name: 'Networking & Security', icon: Shield, color: 'green' },
     { id: 'scalability', name: 'Scalability & Monitoring', icon: Activity, color: 'purple' }
   ];
@@ -17,6 +19,7 @@ const AdminDashboard = () => {
   const getTabColor = (color) => {
     const colors = {
       blue: 'bg-blue-600 hover:bg-blue-700',
+      orange: 'bg-orange-600 hover:bg-orange-700',
       green: 'bg-green-600 hover:bg-green-700',
       purple: 'bg-purple-600 hover:bg-purple-700'
     };
@@ -26,6 +29,7 @@ const AdminDashboard = () => {
   const getTabBorderColor = (color) => {
     const colors = {
       blue: 'border-blue-600',
+      orange: 'border-orange-600',
       green: 'border-green-600',
       purple: 'border-purple-600'
     };
@@ -51,7 +55,15 @@ const AdminDashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="bg-green-500/20 px-4 py-2 rounded-lg border border-green-500/30">
-                <p className="text-green-400 text-sm font-semibold">● Live Status</p>
+                <p className="text-green-400 text-sm font-semibold flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  Live Status
+                </p>
+              </div>
+              <div className="bg-blue-500/20 px-4 py-2 rounded-lg border border-blue-500/30">
+                <p className="text-blue-400 text-sm font-semibold">
+                  Auto-refresh: 30s
+                </p>
               </div>
             </div>
           </div>
@@ -66,7 +78,7 @@ const AdminDashboard = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap relative ${
                     isActive
                       ? `${getTabColor(tab.color)} text-white shadow-lg transform scale-105`
                       : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
@@ -74,6 +86,9 @@ const AdminDashboard = () => {
                 >
                   <Icon className="w-5 h-5" />
                   {tab.name}
+                  <div className={`w-2 h-2 rounded-full ml-2 ${
+                    isActive ? 'bg-white animate-pulse' : 'bg-green-400 animate-pulse'
+                  }`}></div>
                 </button>
               );
             })}
@@ -89,6 +104,7 @@ const AdminDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
+          {activeTab === 'status' && <RealTimeStatus />}
           {activeTab === 'database' && <DatabaseManagement />}
           {activeTab === 'networking' && <NetworkingManagement />}
           {activeTab === 'scalability' && <ScalabilityMonitoring />}

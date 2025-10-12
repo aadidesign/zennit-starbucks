@@ -100,27 +100,25 @@ const Navbar = () => {
               <ShoppingCart size={22} />
             </motion.a>
             
-            <motion.a 
-              href="https://www.starbucks.com/account/signin"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Sign in
-            </motion.a>
+            <Link to="/signin">
+              <motion.button
+                className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Sign in
+              </motion.button>
+            </Link>
             
-            <motion.a 
-              href="https://www.starbucks.com/account/create"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 tracking-tight"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Join now
-            </motion.a>
+            <Link to="/register">
+              <motion.button
+                className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 tracking-tight"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Join now
+              </motion.button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button 
@@ -185,22 +183,20 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.6 }}
                 >
-                  <a 
-                    href="https://www.starbucks.com/account/signin"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link 
+                    to="/signin"
                     className="flex-1 px-4 py-2 border-2 border-black rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-100 text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign in
-                  </a>
-                  <a 
-                    href="https://www.starbucks.com/account/create"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  </Link>
+                  <Link 
+                    to="/register"
                     className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-800 text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Join now
-                  </a>
+                  </Link>
                 </motion.div>
               </div>
             </motion.div>

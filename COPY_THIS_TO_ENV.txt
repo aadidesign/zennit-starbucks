@@ -1,0 +1,76 @@
+# =============================================
+# COPY THIS ENTIRE FILE CONTENT
+# THEN CREATE A NEW FILE NAMED: .env
+# AND PASTE THIS CONTENT THERE
+# =============================================
+
+# AWS Credentials - REPLACE WITH YOUR ACTUAL VALUES
+VITE_AWS_ACCESS_KEY_ID=your_access_key_here
+VITE_AWS_SECRET_ACCESS_KEY=your_secret_access_key_here
+VITE_AWS_REGION=us-east-1
+
+# Optional - Only if you're using S3 for file uploads
+VITE_AWS_S3_BUCKET=your-bucket-name
+
+
+# =============================================
+# INSTRUCTIONS:
+# =============================================
+# 1. Copy all lines starting with VITE_ above
+# 2. Create a new file in root folder: .env
+# 3. Paste the copied lines
+# 4. Replace "your_access_key_here" with your real AWS Access Key ID
+# 5. Replace "your_secret_access_key_here" with your real AWS Secret Key
+# 6. Save the file
+# 7. Restart your dev server: npm run dev
+#
+# Your .env file should look like this:
+# VITE_AWS_ACCESS_KEY_ID=AKIAVJ6S2MPLK3ABC123
+# VITE_AWS_SECRET_ACCESS_KEY=Xy9Zabcd1234efgh5678ijklmn/opqrstuvwxyz+AB
+# VITE_AWS_REGION=us-east-1
+
+
+# =============================================
+# HOW TO GET AWS CREDENTIALS:
+# =============================================
+# 1. Go to: https://console.aws.amazon.com/iam/
+# 2. Click "Users" in left sidebar
+# 3. Click your username
+# 4. Click "Security credentials" tab
+# 5. Click "Create access key"
+# 6. Copy the Access Key ID and Secret Access Key
+# 7. Paste them in your .env file
+
+
+# =============================================
+# EXAMPLE OF REAL CREDENTIALS FORMAT:
+# =============================================
+# Access Key ID format: AKIAxxxxxxxxxx (starts with AKIA)
+# Secret Key format: abcd1234efgh5678... (40 characters long)
+#
+# Example:
+# VITE_AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+# VITE_AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+# VITE_AWS_REGION=us-east-1
+
+
+# =============================================
+# IMPORTANT:
+# =============================================
+# - The file MUST be named .env (not .env.txt)
+# - The file MUST be in the root folder 
+# - Variables MUST start with VITE_ (required by Vite)
+# - NO spaces around the = sign
+# - NO quotes around values
+# - RESTART dev server after creating .env
+
+
+# =============================================
+# AFTER CREATING .env FILE:
+# =============================================
+# 1. Stop your dev server (Ctrl+C)
+# 2. Start it again: npm run dev
+# 3. Go to: http://localhost:5173/register
+# 4. Try to create an account
+# 5. If it works, your credentials are correct!
+

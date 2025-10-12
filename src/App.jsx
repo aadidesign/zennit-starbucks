@@ -10,6 +10,8 @@ import GiftCardsPage from './pages/GiftCardsPage';
 import OurStoryPage from './pages/OurStoryPage';
 import ContactPage from './pages/ContactPage';
 import AdminDashboard from './pages/AdminDashboard';
+import SignInPage from './pages/SignInPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
@@ -19,6 +21,10 @@ function App() {
         <Routes>
           {/* Admin Dashboard - No Navbar/Footer */}
           <Route path="/admin" element={<AdminDashboard />} />
+          
+          {/* Auth Pages - No Navbar/Footer */}
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           
           {/* Regular Pages - With Navbar/Footer */}
           <Route path="*" element={

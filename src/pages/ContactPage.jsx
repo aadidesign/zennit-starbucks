@@ -1,8 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import FAQ from '../components/FAQ';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, AlertCircle, CheckCircle } from 'lucide-react';
+import { saveContactMessage } from '../lib/aws/authService';
 
 const ContactPage = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setError('');
+    setSuccess('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    // Validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    if (!formData.email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await saveContactMessage(formData);
+
+      if (result.success) {
+        setSuccess(result.message);
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          subject: 'General Inquiry',
+          message: ''
+        });
+      } else {
+        setError(result.error || 'Failed to send message');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      console.error('Send message error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -51,39 +117,77 @@ const ContactPage = () => {
           {/* Contact Form */}
           <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 border-2 border-starbucks-green/20">
             <h3 className="text-3xl font-bold mb-8 text-center">Send us a message</h3>
-            <form className="space-y-6">
+            
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+              >
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-red-700 text-sm">{error}</p>
+              </motion.div>
+            )}
+
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3"
+              >
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <p className="text-green-700 text-sm">{success}</p>
+              </motion.div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">First Name</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">First Name *</label>
                   <input 
-                    type="text" 
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors"
                     placeholder="John"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">Last Name</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">Last Name *</label>
                   <input 
-                    type="text" 
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors"
                     placeholder="Doe"
+                    required
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Email</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Email *</label>
                 <input 
-                  type="email" 
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors"
                   placeholder="john.doe@example.com"
+                  required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Phone (Optional)</label>
                 <input 
-                  type="tel" 
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors"
                   placeholder="+1 (555) 000-0000"
                 />
@@ -91,7 +195,12 @@ const ContactPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Subject</label>
-                <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors">
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors"
+                >
                   <option>General Inquiry</option>
                   <option>Product Feedback</option>
                   <option>Store Feedback</option>
@@ -101,19 +210,34 @@ const ContactPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Message</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Message *</label>
                 <textarea 
-                  rows="6" 
+                  rows="6"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-starbucks-green focus:outline-none transition-colors resize-none"
                   placeholder="Tell us how we can help you..."
+                  required
                 ></textarea>
               </div>
 
               <button 
-                type="submit" 
-                className="w-full bg-starbucks-green text-white font-bold py-4 rounded-full hover:bg-starbucks-green-dark transition-all text-lg"
+                type="submit"
+                disabled={loading}
+                className="w-full bg-starbucks-green text-white font-bold py-4 rounded-full hover:bg-starbucks-green-dark transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    <span>Send Message</span>
+                  </>
+                )}
               </button>
             </form>
           </div>

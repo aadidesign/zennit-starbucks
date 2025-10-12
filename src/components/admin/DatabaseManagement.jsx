@@ -21,16 +21,20 @@ const DatabaseManagement = () => {
   const [error, setError] = useState(null);
 
   const services = [
-    { id: 'rds', name: 'Amazon RDS', icon: Database, color: 'blue' },
-    { id: 'dynamodb', name: 'DynamoDB', icon: Zap, color: 'orange' },
-    { id: 'elasticache', name: 'ElastiCache', icon: Activity, color: 'red' },
-    { id: 'documentdb', name: 'DocumentDB', icon: FileJson, color: 'green' },
-    { id: 'neptune', name: 'Neptune', icon: GitBranch, color: 'purple' },
-    { id: 'timestream', name: 'Timestream', icon: Clock, color: 'indigo' }
+    { id: 'dynamodb', name: 'DynamoDB', icon: Zap, color: 'orange' }
   ];
 
   useEffect(() => {
     loadServiceData();
+  }, [activeService]);
+
+  // Auto-refresh every 30 seconds for real-time updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadServiceData();
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [activeService]);
 
   const loadServiceData = async () => {
@@ -40,20 +44,31 @@ const DatabaseManagement = () => {
     try {
       let result;
       switch (activeService) {
-        case 'rds':
-          result = await rdsService.listInstances();
-          break;
         case 'dynamodb':
-          result = await dynamoDBService.listTables();
-          break;
-        case 'elasticache':
-          result = await elastiCacheService.listClusters();
-          break;
-        case 'documentdb':
-          result = await documentDBService.listClusters();
-          break;
-        case 'neptune':
-          result = await neptuneService.listClusters();
+          const tablesResult = await dynamoDBService.listTables();
+          if (tablesResult.success && tablesResult.data.length > 0) {
+            // Get detailed information for each table
+            const detailedTables = await Promise.all(
+              tablesResult.data.map(async (tableName) => {
+                const details = await dynamoDBService.describeTable(tableName);
+                return {
+                  name: tableName,
+                  status: details.success ? details.data.status : 'Unknown',
+                  itemCount: details.success ? details.data.itemCount : 0,
+                  sizeBytes: details.success ? details.data.sizeBytes : 0,
+                  billingMode: details.success ? 
+                    (details.data.billing?.BillingMode || 'PAY_PER_REQUEST') : 'PAY_PER_REQUEST',
+                  creationDateTime: details.success ? details.data.creationDateTime : null,
+                  globalSecondaryIndexes: details.success ? details.data.globalSecondaryIndexes : 0,
+                  localSecondaryIndexes: details.success ? details.data.localSecondaryIndexes : 0,
+                  lastUpdated: new Date().toISOString()
+                };
+              })
+            );
+            result = { success: true, data: detailedTables };
+          } else {
+            result = tablesResult;
+          }
           break;
         default:
           result = { success: true, data: [] };
@@ -262,7 +277,7 @@ const DatabaseManagement = () => {
       {/* Service Selection */}
       <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-white">Database Services</h2>
+          <h2 className="text-2xl font-bold text-white">DynamoDB Database</h2>
           <button
             onClick={loadServiceData}
             disabled={loading}
@@ -273,7 +288,7 @@ const DatabaseManagement = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-3">
           {services.map((service) => {
             const Icon = service.icon;
             const isActive = activeService === service.id;
@@ -321,7 +336,7 @@ const DatabaseManagement = () => {
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <h3 className="text-xl font-bold text-white mb-4">Data Upload & Management</h3>
             <p className="text-gray-400 mb-4">
-              Upload data, configure replication, and manage backups for {services.find(s => s.id === activeService)?.name}
+              Create and manage DynamoDB tables with real-time data
             </p>
             <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors">
               <Plus className="w-5 h-5 inline mr-2" />
@@ -349,29 +364,48 @@ const DatabaseManagement = () => {
                 <table className="w-full">
                   <thead className="bg-gray-700/50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-gray-300">Name</th>
+                      <th className="px-4 py-3 text-left text-gray-300">Table Name</th>
                       <th className="px-4 py-3 text-left text-gray-300">Status</th>
-                      <th className="px-4 py-3 text-left text-gray-300">Engine/Type</th>
-                      <th className="px-4 py-3 text-left text-gray-300">Endpoint</th>
+                      <th className="px-4 py-3 text-left text-gray-300">Items</th>
+                      <th className="px-4 py-3 text-left text-gray-300">Size</th>
+                      <th className="px-4 py-3 text-left text-gray-300">Indexes</th>
+                      <th className="px-4 py-3 text-left text-gray-300">Last Updated</th>
                       <th className="px-4 py-3 text-left text-gray-300">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data[activeService].map((item, index) => (
+                    {data[activeService].map((table, index) => (
                       <tr key={index} className="border-t border-gray-700 hover:bg-gray-700/30">
-                        <td className="px-4 py-3 text-white">
-                          {item.identifier || item.id || item.name || item}
+                        <td className="px-4 py-3 text-white font-medium">
+                          {table.name}
                         </td>
                         <td className="px-4 py-3">
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">
-                            {item.status || 'Active'}
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            table.status === 'ACTIVE' 
+                              ? 'bg-green-500/20 text-green-400'
+                              : 'bg-yellow-500/20 text-yellow-400'
+                          }`}>
+                            {table.status}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-gray-300">
-                          {item.engine || item.nodeType || 'N/A'}
+                          {table.itemCount?.toLocaleString() || '0'}
                         </td>
                         <td className="px-4 py-3 text-gray-400 text-sm">
-                          {item.endpoint || item.Endpoint || 'N/A'}
+                          {table.sizeBytes ? `${(table.sizeBytes / 1024).toFixed(1)} KB` : '0 KB'}
+                        </td>
+                        <td className="px-4 py-3 text-gray-300">
+                          <div className="flex flex-col">
+                            <span className="text-xs">
+                              GSI: {table.globalSecondaryIndexes}
+                            </span>
+                            <span className="text-xs">
+                              LSI: {table.localSecondaryIndexes}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-gray-400 text-sm">
+                          {table.lastUpdated ? new Date(table.lastUpdated).toLocaleTimeString() : 'N/A'}
                         </td>
                         <td className="px-4 py-3">
                           <button className="text-blue-400 hover:text-blue-300 text-sm">

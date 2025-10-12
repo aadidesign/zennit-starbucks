@@ -136,8 +136,48 @@ export const dynamoDBService = {
           itemCount: response.Table.ItemCount,
           sizeBytes: response.Table.TableSizeBytes,
           throughput: response.Table.ProvisionedThroughput,
-          billing: response.Table.BillingModeSummary
+          billing: response.Table.BillingModeSummary,
+          creationDateTime: response.Table.CreationDateTime,
+          lastUpdateDateTime: response.Table.LatestStreamLabel,
+          globalSecondaryIndexes: response.Table.GlobalSecondaryIndexes?.length || 0,
+          localSecondaryIndexes: response.Table.LocalSecondaryIndexes?.length || 0
         }
+      };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  // Get table metrics from CloudWatch
+  async getTableMetrics(tableName, metricName = 'ConsumedReadCapacityUnits', periodHours = 1) {
+    try {
+      const { CloudWatchClient, GetMetricStatisticsCommand } = await import('@aws-sdk/client-cloudwatch');
+      const cloudWatchClient = new CloudWatchClient({
+        region: import.meta.env.VITE_AWS_REGION || 'us-east-1',
+        credentials: {
+          accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
+          secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY
+        }
+      });
+
+      const endTime = new Date();
+      const startTime = new Date(endTime.getTime() - (periodHours * 60 * 60 * 1000));
+      
+      const command = new GetMetricStatisticsCommand({
+        Namespace: 'AWS/DynamoDB',
+        MetricName: metricName,
+        Dimensions: [{ Name: 'TableName', Value: tableName }],
+        StartTime: startTime,
+        EndTime: endTime,
+        Period: 300, // 5 minutes
+        Statistics: ['Average', 'Maximum', 'Minimum'],
+        Unit: 'Count'
+      });
+      
+      const response = await cloudWatchClient.send(command);
+      return {
+        success: true,
+        data: response.Datapoints.sort((a, b) => a.Timestamp - b.Timestamp)
       };
     } catch (error) {
       return { success: false, error: error.message };
