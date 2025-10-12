@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MapPin, ShoppingCart, User } from 'lucide-react';
+import { Menu, X, MapPin, ShoppingCart, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getSession, clearSession } from '../lib/frontendAuthService';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -15,6 +17,44 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      const session = getSession();
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    };
+    
+    checkAuth();
+    
+    // Listen for storage changes (when user logs in/out in another tab)
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Check auth status when location changes (after login/register)
+  useEffect(() => {
+    const session = getSession();
+    if (session) {
+      setUser(session.user);
+    } else {
+      setUser(null);
+    }
+  }, [location]);
+
+  const handleLogout = () => {
+    clearSession();
+    setUser(null);
+    window.location.href = '/';
+  };
 
   const menuItems = [
     { name: 'Menu', path: '/menu' },
@@ -100,25 +140,46 @@ const Navbar = () => {
               <ShoppingCart size={22} />
             </motion.a>
             
-            <Link to="/signin">
-              <motion.button
-                className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Sign in
-              </motion.button>
-            </Link>
-            
-            <Link to="/register">
-              <motion.button
-                className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 tracking-tight"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Join now
-              </motion.button>
-            </Link>
+            {user ? (
+              // User is logged in - show user menu
+              <div className="hidden md:flex items-center space-x-3">
+                <span className="text-sm font-medium text-gray-700">
+                  Welcome, {user.firstName || user.email}
+                </span>
+                <motion.button
+                  onClick={handleLogout}
+                  className="px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight flex items-center space-x-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </motion.button>
+              </div>
+            ) : (
+              // User is not logged in - show sign in/register buttons
+              <>
+                <Link to="/signin">
+                  <motion.button
+                    className="hidden md:block px-4 py-2 border-2 border-black rounded-full font-semibold text-sm hover:bg-gray-100 transition-all duration-300 tracking-tight"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Sign in
+                  </motion.button>
+                </Link>
+                
+                <Link to="/register">
+                  <motion.button
+                    className="hidden md:block px-4 py-2 bg-black text-white rounded-full font-semibold text-sm hover:bg-gray-800 transition-all duration-300 tracking-tight"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Join now
+                  </motion.button>
+                </Link>
+              </>
+            )}
 
             {/* Mobile Menu Button */}
             <button 
@@ -183,20 +244,43 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.6 }}
                 >
-                  <Link 
-                    to="/signin"
-                    className="flex-1 px-4 py-2 border-2 border-black rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-100 text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign in
-                  </Link>
-                  <Link 
-                    to="/register"
-                    className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-800 text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Join now
-                  </Link>
+                  {user ? (
+                    // User is logged in - show user info and logout
+                    <>
+                      <div className="flex-1 px-4 py-2 text-center">
+                        <span className="text-sm font-medium text-gray-700">
+                          Welcome, {user.firstName || user.email}
+                        </span>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          handleLogout();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-800 text-center"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    // User is not logged in - show sign in/register buttons
+                    <>
+                      <Link 
+                        to="/signin"
+                        className="flex-1 px-4 py-2 border-2 border-black rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-100 text-center"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign in
+                      </Link>
+                      <Link 
+                        to="/register"
+                        className="flex-1 px-4 py-2 bg-black text-white rounded-full font-semibold text-sm tracking-tight transition-all duration-300 hover:bg-gray-800 text-center"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Join now
+                      </Link>
+                    </>
+                  )}
                 </motion.div>
               </div>
             </motion.div>

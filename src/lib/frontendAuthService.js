@@ -45,7 +45,8 @@ export const registerUser = async (userData) => {
         ...userData,
         createdAt: new Date().toISOString(),
         verified: false
-      }
+      },
+      token: 'mock-registration-token-' + Date.now()
     };
   } catch (error) {
     console.error('Registration error:', error);
@@ -90,12 +91,20 @@ export const signInUser = async (email, password) => {
 
 export const saveSession = (userData) => {
   try {
-    // Save to localStorage for frontend
-    localStorage.setItem('starbucks_user', JSON.stringify(userData));
-    localStorage.setItem('starbucks_session', JSON.stringify({
-      token: userData.token || 'mock-token',
+    // Ensure userData has required properties
+    const sessionData = {
+      user: userData.user || userData,
+      token: userData.token || userData.user?.token || 'mock-token-' + Date.now(),
       timestamp: Date.now()
+    };
+
+    // Save to localStorage for frontend
+    localStorage.setItem('starbucks_user', JSON.stringify(sessionData.user));
+    localStorage.setItem('starbucks_session', JSON.stringify({
+      token: sessionData.token,
+      timestamp: sessionData.timestamp
     }));
+    
     return { success: true };
   } catch (error) {
     console.error('Save session error:', error);
