@@ -8,6 +8,7 @@ export default defineConfig({
     port: 3000,
     open: true
   },
+  base: '/', // Ensure base path is correct
   build: {
     outDir: 'dist',
     sourcemap: false, // Disable sourcemaps to save memory
