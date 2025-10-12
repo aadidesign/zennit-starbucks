@@ -101,6 +101,36 @@ export const timestreamService = {
 };
 
 // Networking Services
+export const vpcService = {
+  getVPCs: async () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: [
+            { id: 'vpc-1', name: 'Main VPC', cidr: '10.0.0.0/16', status: 'available' }
+          ]
+        });
+      }, 1000);
+    });
+  }
+};
+
+export const loadBalancerService = {
+  getLoadBalancers: async () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: [
+            { id: 'elb-1', name: 'Web Load Balancer', status: 'active' }
+          ]
+        });
+      }, 1000);
+    });
+  }
+};
+
 export const ec2Service = {
   getVPCs: async () => {
     return new Promise((resolve) => {

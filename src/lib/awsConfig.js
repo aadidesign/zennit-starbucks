@@ -1,7 +1,50 @@
-// AWS SDK Configuration for advanced features
-// This is optional and only needed if you want to use AWS services directly
+// Frontend-safe AWS Configuration
+// This version works without AWS SDK imports for frontend builds
 
-import AWS from 'aws-sdk';
+// Mock AWS object for frontend builds
+const AWS = {
+  config: {
+    update: () => {
+      console.log('Mock AWS config update');
+    }
+  },
+  S3: class MockS3 {
+    constructor() {
+      this.params = {};
+    }
+    upload(params) {
+      return {
+        promise: () => Promise.resolve({
+          Location: 'mock-s3-url'
+        })
+      };
+    }
+    getObject(params) {
+      return {
+        promise: () => Promise.resolve({
+          Body: Buffer.from('mock data')
+        })
+      };
+    }
+    deleteObject(params) {
+      return {
+        promise: () => Promise.resolve({})
+      };
+    }
+  },
+  CloudFront: class MockCloudFront {
+    constructor() {
+      console.log('Mock CloudFront initialized');
+    }
+  },
+  DynamoDB: {
+    DocumentClient: class MockDocumentClient {
+      constructor() {
+        console.log('Mock DynamoDB DocumentClient initialized');
+      }
+    }
+  }
+};
 
 // Configure AWS SDK
 AWS.config.update({
